@@ -34,12 +34,13 @@ class App extends Component{
     }
 
     onButtonSubmit = () => {
+        /*
         this.setState({imageUrl:this.state.input})
         app.models.predict(
             Clarifai.FACE_DETECT_MODEL, 
             this.state.input).then(
             function(response) {
-                console.log('adsadadasdsad');
+                console.log();
                 
                 console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
             },
@@ -47,6 +48,25 @@ class App extends Component{
                 console.log(err);
             }
         );
+        
+        */
+       //IMPORTANT: INSTEAD OF USING THE CODE ABOVE, WHERE WE MUST COPY INPUT IN IMAGEURL
+       //BUT USE THE FIRST ONE TO REQUEST THE FACE FOR TIMING REASONS,
+       //WE USE SET STATE WITH CALLBACK. WE CAN SET THE STATE AND AFTERWARD we call the api
+       this.setState({imageUrl:this.state.input}, () => {
+            app.models.predict(
+                Clarifai.FACE_DETECT_MODEL, 
+                this.state.imageUrl).then(
+                function(response) {
+                    console.log('adsadadasdsad');
+                    
+                    console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
+                },
+                function(err) {
+                    console.log(err);
+                }
+            );
+        })
     }
 
     render() {
