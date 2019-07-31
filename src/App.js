@@ -3,6 +3,7 @@ import Navigation from './components/navigation/Navigation'
 import Logo from './components/logo/Logo'
 import ImageLinkForm from './components/imagelinkform/ImageLinkForm'
 import Rank from './components/rank/Rank'
+import FaceRecognition from './components/facerecognition/FaceRecognition'
 import Clarifai from 'clarifai'
 import './App.css'
 
@@ -23,24 +24,25 @@ class App extends Component{
     constructor() {
         super();
         this.state = {
-            input: ''
+            input: '',
+            imageUrl: ''
         }
     }
 
     onInputChange = (event) => {
-        console.log(event);
-        //
         this.setState({input:event.target.value})
     }
 
     onButtonSubmit = () => {
-        console.log('click');
-        app.models.predict(ClarifaiKey.key, 'https://samples.clarifai.com/puppy.jpeg').then(
+        this.setState({imageUrl:this.state.input})
+        app.models.predict(
+            Clarifai.COLOR_MODEL, 
+            this.state.input).then(
             function(response) {
                 console.log(response);
             },
             function(err) {
-
+                console.log(err);
             }
         );
     }
@@ -57,7 +59,7 @@ class App extends Component{
                     onInputChange={this.onInputChange} 
                     onButtonSubmit={this.onButtonSubmit}
                 />
-                {/* <FaceRecognition/> */}
+                <FaceRecognition imageUrl={this.state.imageUrl}/>
             </div>
         )
     }
