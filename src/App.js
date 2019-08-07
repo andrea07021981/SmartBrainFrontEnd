@@ -77,7 +77,7 @@ class App extends Component{
         this.setState({input:event.target.value})
     }
 
-    onButtonSubmit = () => {
+    onPictureSubmit = () => {
         /*
         this.setState({imageUrl:this.state.input})
         app.models.predict(
@@ -94,6 +94,28 @@ class App extends Component{
        //WE also changed the then catch with async / await
        this.setState({imageUrl:this.state.input}, async () => {
             let apiResponce = await app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.imageUrl);
+            console.log(apiResponce);
+            
+            if (apiResponce) {
+                let header = new Headers({
+                    "Content-Type": "application/json"
+                });
+
+                let signInPut = {
+                    method: 'PUT',
+                    headers: header,
+                    body: JSON.stringify({
+                        id: this.state.user.id
+                    })
+                }
+                fetch('http://localhost:3000/image', signInPut)
+                .then(response => response.json())
+                .then(count => {
+                    //-------------------IMPORTANT  
+                    //WE MUST USE Object.assign() WHEN WE UPDATE ONE ELEMENT OF THE ARRAY
+                    this.setState(Object.assign(this.state.user, { entries: count}))
+                })
+            }
             await this.displayFaceBox(this.calculateFaceLocation(apiResponce));
         })
     }
@@ -120,7 +142,7 @@ class App extends Component{
                         <Rank name={this.state.user.name} entries={this.state.user.entries}/> 
                         <ImageLinkForm 
                             onInputChange={this.onInputChange} 
-                            onButtonSubmit={this.onButtonSubmit}
+                            onPictureSubmit={this.onPictureSubmit}
                         />
                         <FaceRecognition box={box} imageUrl={imageUrl}/>
                     </div>

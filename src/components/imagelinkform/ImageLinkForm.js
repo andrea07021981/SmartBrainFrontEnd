@@ -2,7 +2,7 @@ import React from 'react';
 import './ImageLinkForm.css'
 
 //INSTEAD OF USING PROPS.ONINPUTCHANGE IN BUTTON WE USE DESTRUCTURING
-const ImageLinkForm = ({ onInputChange, onButtonSubmit}) => {
+const ImageLinkForm = ({ onInputChange, onPictureSubmit}) => {
     return (
         <div>
             <p className='f3'>
@@ -16,7 +16,7 @@ const ImageLinkForm = ({ onInputChange, onButtonSubmit}) => {
                         onChange={onInputChange}/>
                     <button 
                         className='w-30 grow f4 link ph3 pv2 dib white bg-light-purple' 
-                        onClick={onButtonSubmit}>Detect</button>
+                        onClick={onPictureSubmit}>Detect</button>
                 </div>
             </div>
         </div>
