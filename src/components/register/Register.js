@@ -48,6 +48,7 @@ class Register extends React.Component {
                 console.log(data);
             }
         })
+        .catch(err => console.log(err));
     }
 
     render() {
