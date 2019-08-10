@@ -6,20 +6,13 @@ import Rank from './components/rank/Rank'
 import FaceRecognition from './components/facerecognition/FaceRecognition'
 import SignIn from './components/signin/SignIn'
 import Register from './components/register/Register'
-import Clarifai from 'clarifai'
 import './App.css'
 
 
 import { ParticleOptions } from './components/particle/ParticleOptions'
-import { ClarifaiKey } from './components/clarifaikey/ClarifaiKey'
 
 //NPM parts
 import Particles from 'react-particles-js';
-
-//IMPORTANT FOR CLARIFAI
-const app = new Clarifai.App({
-    apiKey: ClarifaiKey.key
-});
 
 const initialState = {
     input: '',
@@ -55,19 +48,21 @@ class App extends Component{
     }
 
     calculateFaceLocation = (data) => {
-        console.log('Data:', data.outputs[0].data.regions[0].region_info.bounding_box);
+        console.log(data);
+        
         const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-        const img = document.getElementById('inputImage');
-        const width = Number(img.width);
-        const height = Number(img.height);
-
+        const image = document.getElementById('inputImage');
+        console.log('image',image);
+        
+        const width = Number(image.width);
+        const height = Number(image.height);
         return {
-            leftCol: clarifaiFace.left_col * width,
-            topRow: clarifaiFace.top_row * height,
-            rightCol: width - (clarifaiFace.right_col * width),
-            bottomRow: height - (clarifaiFace.bottom_row * height)
+          leftCol: clarifaiFace.left_col * width,
+          topRow: clarifaiFace.top_row * height,
+          rightCol: width - (clarifaiFace.right_col * width),
+          bottomRow: height - (clarifaiFace.bottom_row * height)
         }
-    }
+      }
 
     displayFaceBox = box => {
         console.log(box);
@@ -93,31 +88,42 @@ class App extends Component{
        //BUT USE THE FIRST ONE TO REQUEST THE FACE FOR TIMING REASONS,
        //WE USE SET STATE WITH CALLBACK. WE CAN SET THE STATE AND AFTERWARD we call the api
        //WE also changed the then catch with async / await
-       this.setState({imageUrl:this.state.input}, async () => {
-            let apiResponce = await app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.imageUrl);
-            console.log(apiResponce);
-            
-            if (apiResponce) {
-                let header = new Headers({
-                    "Content-Type": "application/json"
-                });
+       this.setState({imageUrl:this.state.input}, () => {
+            let header = new Headers({
+                "Content-Type": "application/json"
+            });
 
-                let signInPut = {
-                    method: 'PUT',
-                    headers: header,
-                    body: JSON.stringify({
-                        id: this.state.user.id
-                    })
-                }
-                fetch('http://localhost:3000/image', signInPut)
-                .then(response => response.json())
-                .then(count => {
-                    //-------------------IMPORTANT  
-                    //WE MUST USE Object.assign() WHEN WE UPDATE ONE ELEMENT OF THE ARRAY
-                    this.setState(Object.assign(this.state.user, { entries: count}))
+            let signInPost = {
+                method: 'POST',
+                headers: header,
+                body: JSON.stringify({
+                    input: this.state.input
                 })
             }
-            await this.displayFaceBox(this.calculateFaceLocation(apiResponce));
+
+            fetch('http://localhost:3000/imageurl', signInPost)
+            .then(response => response.json())
+            .then(response => {
+                if (response) {
+                    let signInPut = {
+                        method: 'PUT',
+                        headers: header,
+                        body: JSON.stringify({
+                            id: this.state.user.id
+                        })
+                    }
+                    fetch('http://localhost:3000/image', signInPut)
+                    .then(response => response.json())
+                    .then(count => {
+                        //-------------------IMPORTANT  
+                        //WE MUST USE Object.assign() WHEN WE UPDATE ONE ELEMENT OF THE ARRAY
+                        this.setState(Object.assign(this.state.user, { entries: count}))
+                    })
+                    .catch(console.log)
+                }
+                this.displayFaceBox(this.calculateFaceLocation(response));
+            })
+            .catch(err => console.log(err));
         })
     }
 

@@ -38,14 +38,13 @@ class Register extends React.Component {
         }
         fetch('http://localhost:3000/register', registerPost)
         .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            
-            if (data) {
-                this.props.loadUser(data);
+        .then(user => {
+            console.log(user);
+            if (user.id) {
+                this.props.loadUser(user);
                 this.props.onRouteChange('home');
             } else {
-                console.log(data);
+                console.log(user);
             }
         })
         .catch(err => console.log(err));
