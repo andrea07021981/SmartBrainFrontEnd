@@ -36,7 +36,7 @@ class Register extends React.Component {
                 password: registerPassword
             })
         }
-        fetch('http://localhost:3000/register', registerPost)
+        fetch('https://whispering-taiga-19794.herokuapp.com/register', registerPost)
         .then(response => response.json())
         .then(user => {
             console.log(user);

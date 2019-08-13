@@ -101,7 +101,7 @@ class App extends Component{
                 })
             }
 
-            fetch('http://localhost:3000/imageurl', signInPost)
+            fetch('https://whispering-taiga-19794.herokuapp.com/imageurl', signInPost)
             .then(response => response.json())
             .then(response => {
                 if (response) {
@@ -112,7 +112,7 @@ class App extends Component{
                             id: this.state.user.id
                         })
                     }
-                    fetch('http://localhost:3000/image', signInPut)
+                    fetch('https://whispering-taiga-19794.herokuapp.com/image', signInPut)
                     .then(response => response.json())
                     .then(count => {
                         //-------------------IMPORTANT  
