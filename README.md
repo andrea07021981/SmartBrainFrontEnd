@@ -1,3 +1,10 @@
+This is the final project of Complete Web Development course on Udemy.
+It's just the front-end part, which was developed with react and deployed on Heroku.
+It works with the Postgre sql SmartBrainDatabase and the backend SmartBrainApi.
+
+It allows the registered user to upload an image on the link and recognizing faces through Clarifai api.
+It also needs a key for Clarifai that can be obrained on https://www.clarifai.com
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
